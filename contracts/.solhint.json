@@ -60,8 +60,13 @@
     "contracts-v2/category-headers": [
       "error",
       {
-        "minCategories": 2,
-        "initializationFunctions": ["constructor", "supportsInterface", "supportsFeature", "initialize"]
+        "minCategories": 3,
+        "initializationFunctions": [
+          "constructor",
+          "supportsInterface",
+          "supportsFeature",
+          "initialize"
+        ]
       }
     ]
   }

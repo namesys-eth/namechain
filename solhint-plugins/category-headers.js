@@ -43,7 +43,10 @@ class CategoryHeadersChecker {
     this._categoryBlocks = [];
     this._contractRanges = [];
 
-    const userConfig = config?.getObject(ruleId) || {};
+    const userConfig =
+      config?.getObject(`contracts-v2/${ruleId}`) ||
+      config?.getObject(ruleId) ||
+      {};
     this.minCategories = userConfig.minCategories ?? 2;
 
     const userInitFns = userConfig.initializationFunctions;
@@ -92,9 +95,7 @@ class CategoryHeadersChecker {
       if (!DIVIDER_RE.test(lines[i + 2].content)) continue;
 
       const indent = lines[i].content.match(/^(\s*)/)[1];
-      // nameLineStart/End are the offsets of just the "// Name" text within the line
-      // (after leading whitespace), used for targeted label replacement
-      const nameLineStart = lines[i + 1].start + indent.length;
+      const nameLineStart = lines[i + 1].start;
       const nameLineEnd = lines[i + 1].end;
 
       this._categoryBlocks.push({
@@ -176,18 +177,20 @@ class CategoryHeadersChecker {
   // Each block gets its own reporter.error call with its own fixer.
   _reportMergeConflict(node, firstBlock, secondBlock, combinedName, message) {
     // Fix for firstBlock: rename its label line to combinedName
+    // Range end is inclusive in solhint's applyFixes
     this.reporter.error(node, ruleId, message, (fixer) =>
       fixer.replaceTextRange(
-        [firstBlock.nameLineStart, firstBlock.nameLineEnd],
+        [firstBlock.nameLineStart, firstBlock.nameLineEnd - 1],
         this._makeNameLine(firstBlock.indent, combinedName),
       ),
     );
 
     // Fix for secondBlock: delete the entire block (including trailing newline)
+    // Range end is inclusive in solhint's applyFixes
     const deleteEnd = Math.min(
       secondBlock.blockWithNewlineEnd,
       this.inputSrc.length,
-    );
+    ) - 1;
     this.reporter.error(node, ruleId, message, (fixer) =>
       fixer.replaceTextRange([secondBlock.startOffset, deleteEnd], ""),
     );
@@ -265,7 +268,7 @@ class CategoryHeadersChecker {
       const deleteEnd = Math.min(
         stray.blockWithNewlineEnd,
         this.inputSrc.length,
-      );
+      ) - 1;
       this.reporter.error(
         node,
         ruleId,
@@ -286,7 +289,7 @@ class CategoryHeadersChecker {
           `Use 'Implementation' for library functions (not 'Internal Functions')`,
           (fixer) =>
             fixer.replaceTextRange(
-              [internalFnsBlock.nameLineStart, internalFnsBlock.nameLineEnd],
+              [internalFnsBlock.nameLineStart, internalFnsBlock.nameLineEnd - 1],
               this._makeNameLine(internalFnsBlock.indent, "Implementation"),
             ),
         );
@@ -321,7 +324,7 @@ class CategoryHeadersChecker {
         const deleteEnd = Math.min(
           stray.blockWithNewlineEnd,
           this.inputSrc.length,
-        );
+        ) - 1;
         this.reporter.error(
           node,
           ruleId,
