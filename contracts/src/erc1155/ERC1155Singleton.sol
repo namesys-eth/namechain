@@ -173,7 +173,7 @@ abstract contract ERC1155Singleton is
     }
 
     ////////////////////////////////////////////////////////////////////////
-    // Internal & Private Functions
+    // Internal Functions
     ////////////////////////////////////////////////////////////////////////
 
     /// @dev Transfers a `value` amount of tokens of type `id` from `from` to `to`. Will mint (or burn) if `from`
@@ -388,6 +388,10 @@ abstract contract ERC1155Singleton is
         _operatorApprovals[owner][operator] = approved;
         emit ApprovalForAll(owner, operator, approved);
     }
+
+    ////////////////////////////////////////////////////////////////////////
+    // Private Functions
+    ////////////////////////////////////////////////////////////////////////
 
     /// @dev Creates an array in memory with only one value for each of the elements provided.
     function _asSingletonArrays(
