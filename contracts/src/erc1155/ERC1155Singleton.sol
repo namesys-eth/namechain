@@ -176,18 +176,15 @@ abstract contract ERC1155Singleton is
     // Internal Functions
     ////////////////////////////////////////////////////////////////////////
 
-    /// @dev Transfers a `value` amount of tokens of type `id` from `from` to `to`. Will mint (or burn) if `from`
-    /// (or `to`) is the zero address.
-    ///
-    /// Emits a {TransferSingle} event if the arrays contain one element, and {TransferBatch} otherwise.
-    ///
-    /// Requirements:
-    ///
-    /// - If `to` refers to a smart contract, it must implement either {IERC1155Receiver-onERC1155Received}
-    ///   or {IERC1155Receiver-onERC1155BatchReceived} and return the acceptance magic value.
-    /// - `ids` and `values` must have the same length.
-    ///
-    /// NOTE: The ERC-1155 acceptance check is not performed in this function. See {_updateWithAcceptanceCheck} instead.
+    /// @notice Apply token updates for each pair in `ids` and `values`.
+    /// @param from Address tokens are moved from. Use `address(0)` for mints.
+    /// @param to Address tokens are moved to. Use `address(0)` for burns.
+    /// @param ids Token IDs to update.
+    /// @param values Amounts for each token ID.
+    /// @dev Reverts with `ERC1155InvalidArrayLength` if `ids.length != values.length`.
+    /// @dev Reverts with `ERC1155InsufficientBalance` if `from` is not the current owner or `value > 1`.
+    /// @dev This function does not perform ERC-1155 receiver acceptance checks.
+    /// @dev Emits `TransferSingle` when one token ID is updated, otherwise emits `TransferBatch`.
     function _update(
         address from,
         address to,
@@ -224,13 +221,15 @@ abstract contract ERC1155Singleton is
         }
     }
 
-    /// @dev Version of {_update} that performs the token acceptance check by calling
-    /// {IERC1155Receiver-onERC1155Received} or {IERC1155Receiver-onERC1155BatchReceived} on the receiver address if it
-    /// contains code (eg. is a smart contract at the moment of execution).
-    ///
-    /// IMPORTANT: Overriding this function is discouraged because it poses a reentrancy risk from the receiver. So any
-    /// update to the contract state after this function would break the check-effect-interaction pattern. Consider
-    /// overriding {_update} instead.
+    /// @notice Apply token updates and run ERC-1155 receiver acceptance checks.
+    /// @param from Address tokens are moved from. Use `address(0)` for mints.
+    /// @param to Address tokens are moved to. Use `address(0)` for burns.
+    /// @param ids Token IDs to update.
+    /// @param values Amounts for each token ID.
+    /// @param data Additional calldata passed to receiver hooks.
+    /// @dev Calls `_update` before external receiver callbacks.
+    /// @dev If `to` is a contract, this calls `onERC1155Received` or `onERC1155BatchReceived`.
+    /// @dev Overriding is discouraged because post-callback state writes can introduce reentrancy bugs.
     function _updateWithAcceptanceCheck(
         address from,
         address to,
@@ -251,16 +250,16 @@ abstract contract ERC1155Singleton is
         }
     }
 
-    /// @dev Transfers a `value` tokens of token type `id` from `from` to `to`.
-    ///
-    /// Emits a {TransferSingle} event.
-    ///
-    /// Requirements:
-    ///
-    /// - `to` cannot be the zero address.
-    /// - `from` must have a balance of tokens of type `id` of at least `value` amount.
-    /// - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155Received} and return the
-    /// acceptance magic value.
+    /// @notice Safely transfer `value` tokens of token ID `id` from `from` to `to`.
+    /// @param from Address to transfer from.
+    /// @param to Address to transfer to.
+    /// @param id Token ID to transfer.
+    /// @param value Amount to transfer.
+    /// @param data Additional calldata passed to receiver hooks.
+    /// @dev Reverts with `ERC1155InvalidSender` if `from` is the zero address.
+    /// @dev Reverts with `ERC1155InvalidReceiver` if `to` is the zero address.
+    /// @dev If `to` is a contract, it must return the ERC-1155 acceptance magic value.
+    /// @dev Emits `TransferSingle`.
     function _safeTransferFrom(
         address from,
         address to,
@@ -278,15 +277,17 @@ abstract contract ERC1155Singleton is
         _updateWithAcceptanceCheck(from, to, ids, values, data);
     }
 
-    /// @dev xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {_safeTransferFrom}.
-    ///
-    /// Emits a {TransferBatch} event.
-    ///
-    /// Requirements:
-    ///
-    /// - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155BatchReceived} and return the
-    /// acceptance magic value.
-    /// - `ids` and `values` must have the same length.
+    /// @notice Safely transfer multiple token IDs from `from` to `to`.
+    /// @param from Address to transfer from.
+    /// @param to Address to transfer to.
+    /// @param ids Token IDs to transfer.
+    /// @param values Amounts to transfer for each token ID.
+    /// @param data Additional calldata passed to receiver hooks.
+    /// @dev Reverts with `ERC1155InvalidSender` if `from` is the zero address.
+    /// @dev Reverts with `ERC1155InvalidReceiver` if `to` is the zero address.
+    /// @dev Reverts with `ERC1155InvalidArrayLength` if `ids.length != values.length`.
+    /// @dev If `to` is a contract, it must return the ERC-1155 acceptance magic value.
+    /// @dev Emits `TransferBatch`.
     function _safeBatchTransferFrom(
         address from,
         address to,
@@ -303,15 +304,14 @@ abstract contract ERC1155Singleton is
         _updateWithAcceptanceCheck(from, to, ids, values, data);
     }
 
-    /// @dev Creates a `value` amount of tokens of type `id`, and assigns them to `to`.
-    ///
-    /// Emits a {TransferSingle} event.
-    ///
-    /// Requirements:
-    ///
-    /// - `to` cannot be the zero address.
-    /// - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155Received} and return the
-    /// acceptance magic value.
+    /// @notice Mint `value` tokens of token ID `id` to `to`.
+    /// @param to Address receiving the minted token.
+    /// @param id Token ID to mint.
+    /// @param value Amount to mint.
+    /// @param data Additional calldata passed to receiver hooks.
+    /// @dev Reverts with `ERC1155InvalidReceiver` if `to` is the zero address.
+    /// @dev If `to` is a contract, it must return the ERC-1155 acceptance magic value.
+    /// @dev Emits `TransferSingle`.
     function _mint(address to, uint256 id, uint256 value, bytes memory data) internal {
         if (to == address(0)) {
             revert ERC1155InvalidReceiver(address(0));
@@ -320,16 +320,15 @@ abstract contract ERC1155Singleton is
         _updateWithAcceptanceCheck(address(0), to, ids, values, data);
     }
 
-    /// @dev xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {_mint}.
-    ///
-    /// Emits a {TransferBatch} event.
-    ///
-    /// Requirements:
-    ///
-    /// - `ids` and `values` must have the same length.
-    /// - `to` cannot be the zero address.
-    /// - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155BatchReceived} and return the
-    /// acceptance magic value.
+    /// @notice Mint multiple token IDs to `to`.
+    /// @param to Address receiving the minted tokens.
+    /// @param ids Token IDs to mint.
+    /// @param values Amounts to mint for each token ID.
+    /// @param data Additional calldata passed to receiver hooks.
+    /// @dev Reverts with `ERC1155InvalidReceiver` if `to` is the zero address.
+    /// @dev Reverts with `ERC1155InvalidArrayLength` if `ids.length != values.length`.
+    /// @dev If `to` is a contract, it must return the ERC-1155 acceptance magic value.
+    /// @dev Emits `TransferBatch`.
     function _mintBatch(
         address to,
         uint256[] memory ids,
@@ -342,14 +341,13 @@ abstract contract ERC1155Singleton is
         _updateWithAcceptanceCheck(address(0), to, ids, values, data);
     }
 
-    /// @dev Destroys a `value` amount of tokens of type `id` from `from`
-    ///
-    /// Emits a {TransferSingle} event.
-    ///
-    /// Requirements:
-    ///
-    /// - `from` cannot be the zero address.
-    /// - `from` must have at least `value` amount of tokens of type `id`.
+    /// @notice Burn `value` tokens of token ID `id` from `from`.
+    /// @param from Address to burn from.
+    /// @param id Token ID to burn.
+    /// @param value Amount to burn.
+    /// @dev Reverts with `ERC1155InvalidSender` if `from` is the zero address.
+    /// @dev Reverts with `ERC1155InsufficientBalance` if `from` is not current owner or `value > 1`.
+    /// @dev Emits `TransferSingle`.
     function _burn(address from, uint256 id, uint256 value) internal {
         if (from == address(0)) {
             revert ERC1155InvalidSender(address(0));
@@ -358,15 +356,14 @@ abstract contract ERC1155Singleton is
         _updateWithAcceptanceCheck(from, address(0), ids, values, "");
     }
 
-    /// @dev xref:ROOT:erc1155.adoc#batch-operations[Batched] version of {_burn}.
-    ///
-    /// Emits a {TransferBatch} event.
-    ///
-    /// Requirements:
-    ///
-    /// - `from` cannot be the zero address.
-    /// - `from` must have at least `value` amount of tokens of type `id`.
-    /// - `ids` and `values` must have the same length.
+    /// @notice Burn multiple token IDs from `from`.
+    /// @param from Address to burn from.
+    /// @param ids Token IDs to burn.
+    /// @param values Amounts to burn for each token ID.
+    /// @dev Reverts with `ERC1155InvalidSender` if `from` is the zero address.
+    /// @dev Reverts with `ERC1155InvalidArrayLength` if `ids.length != values.length`.
+    /// @dev Reverts with `ERC1155InsufficientBalance` if `from` is not current owner or `value > 1`.
+    /// @dev Emits `TransferBatch`.
     function _burnBatch(address from, uint256[] memory ids, uint256[] memory values) internal {
         if (from == address(0)) {
             revert ERC1155InvalidSender(address(0));
@@ -374,13 +371,12 @@ abstract contract ERC1155Singleton is
         _updateWithAcceptanceCheck(from, address(0), ids, values, "");
     }
 
-    /// @dev Approve `operator` to operate on all of `owner` tokens
-    ///
-    /// Emits an {ApprovalForAll} event.
-    ///
-    /// Requirements:
-    ///
-    /// - `operator` cannot be the zero address.
+    /// @notice Set or clear approval for `operator` to manage all tokens owned by `owner`.
+    /// @param owner Token owner granting or revoking approval.
+    /// @param operator Operator receiving approval.
+    /// @param approved Approval status to set.
+    /// @dev Reverts with `ERC1155InvalidOperator` if `operator` is the zero address.
+    /// @dev Emits `ApprovalForAll`.
     function _setApprovalForAll(address owner, address operator, bool approved) internal virtual {
         if (operator == address(0)) {
             revert ERC1155InvalidOperator(address(0));
