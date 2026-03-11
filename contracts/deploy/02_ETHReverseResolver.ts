@@ -1,5 +1,8 @@
 import { artifacts, execute } from "@rocketh";
-import { MAX_EXPIRY } from "../script/deploy-constants.js";
+import {
+  MAX_EXPIRY,
+  DEPLOYMENT_ROLES,
+} from "../script/deploy-constants.js";
 import { zeroAddress } from "viem";
 
 // TODO: ownership
@@ -39,7 +42,7 @@ export default execute(
         deployer,
         zeroAddress,
         ethReverseResolver.address,
-        0n,
+        DEPLOYMENT_ROLES.REVERSE_AND_ADDR,
         MAX_EXPIRY,
       ],
     });

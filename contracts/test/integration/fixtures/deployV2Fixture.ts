@@ -3,6 +3,7 @@ import { type Address, zeroAddress } from "viem";
 import {
   LOCAL_BATCH_GATEWAY_URL,
   ROLES,
+  DEPLOYMENT_ROLES,
 } from "../../../script/deploy-constants.js";
 import { splitName, idFromLabel } from "../../utils/utils.js";
 import { deployVerifiableProxy } from "./deployVerifiableProxy.js";
@@ -20,11 +21,21 @@ export async function deployV2Fixture(
   const hcaFactory = await network.viem.deployContract("MockHCAFactoryBasic");
   const rootRegistry = await network.viem.deployContract(
     "PermissionedRegistry",
-    [hcaFactory.address, zeroAddress, walletClient.account.address, ROLES.ALL],
+    [
+      hcaFactory.address,
+      zeroAddress,
+      walletClient.account.address,
+      DEPLOYMENT_ROLES.ROOT_REGISTRY_ROOT,
+    ],
   );
   const ethRegistry = await network.viem.deployContract(
     "PermissionedRegistry",
-    [hcaFactory.address, zeroAddress, walletClient.account.address, ROLES.ALL],
+    [
+      hcaFactory.address,
+      zeroAddress,
+      walletClient.account.address,
+      DEPLOYMENT_ROLES.ETH_REGISTRY_ROOT,
+    ],
   );
   const batchGatewayProvider = await network.viem.deployContract(
     "GatewayProvider",
@@ -40,8 +51,15 @@ export async function deployV2Fixture(
     walletClient.account.address,
     ethRegistry.address,
     zeroAddress,
-    ROLES.ALL,
+    DEPLOYMENT_ROLES.ETH_TOKEN,
     MAX_EXPIRY,
+  ]);
+  await ethRegistry.write.setParent([rootRegistry.address, "eth"]);
+
+  // Grant REGISTRAR so setupName can register subdomains under .eth
+  await ethRegistry.write.grantRootRoles([
+    ROLES.REGISTRY.REGISTRAR,
+    walletClient.account.address,
   ]);
   const verifiableFactory =
     await network.viem.deployContract("VerifiableFactory");

@@ -495,13 +495,19 @@ async function setupEnsDotEth(deployment: Deployment, account: Account) {
   // created owned resolver for "ens.eth"
   const resolver = await deployment.deployPermissionedResolver({ account });
 
-  // create "ens.eth"
+  // Deployer has REGISTRAR_ADMIN but not REGISTRAR; grant self REGISTRAR for setup
+  await deployment.contracts.ETHRegistry.write.grantRootRoles([
+    ROLES.REGISTRY.REGISTRAR,
+    account.address,
+  ]);
+
+  // create "ens.eth" (owner gets full roles for devnet setup)
   await deployment.contracts.ETHRegistry.write.register([
     "ens",
     account.address,
     zeroAddress, //ens_ethRegistry.address,
     resolver.address,
-    0n,
+    ROLES.ALL,
     MAX_EXPIRY,
   ]);
 

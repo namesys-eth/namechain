@@ -1,5 +1,8 @@
 import { artifacts, execute } from "@rocketh";
-import { MAX_EXPIRY, ROLES } from "../script/deploy-constants.js";
+import {
+  MAX_EXPIRY,
+  DEPLOYMENT_ROLES,
+} from "../script/deploy-constants.js";
 
 // TODO: ownership
 export default execute(
@@ -18,7 +21,9 @@ export default execute(
       (typeof artifacts.SimpleRegistryMetadata)["abi"]
     >("SimpleRegistryMetadata");
 
-    // create "reverse" registry
+    // ReverseRegistry root and .reverse/.addr tokens use full role bitmap
+    const reverseRoles = DEPLOYMENT_ROLES.REVERSE_AND_ADDR;
+
     const reverseRegistry = await deploy("ReverseRegistry", {
       account: deployer,
       artifact: artifacts.PermissionedRegistry,
@@ -26,11 +31,10 @@ export default execute(
         hcaFactory.address,
         registryMetadata.address,
         deployer,
-        ROLES.ALL,
+        reverseRoles,
       ],
     });
 
-    // register "reverse" with default resolver
     await write(rootRegistry, {
       account: deployer,
       functionName: "register",
@@ -39,9 +43,15 @@ export default execute(
         deployer,
         reverseRegistry.address,
         defaultReverseResolverV1.address,
-        0n,
+        reverseRoles,
         MAX_EXPIRY,
       ],
+    });
+
+    await write(reverseRegistry, {
+      account: deployer,
+      functionName: "setParent",
+      args: [rootRegistry.address, "reverse"],
     });
   },
   {

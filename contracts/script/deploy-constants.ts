@@ -54,6 +54,38 @@ export const ROLES = {
   ADMIN: adminify(FLAGS),
 } as const satisfies Flags;
 
+/** Role bitmaps for static deployment per README Static Deployment Permissions. */
+export const DEPLOYMENT_ROLES = {
+  /** RootRegistry root: REGISTRAR✓✓, REGISTER_RESERVED✓✓, SET_PARENT✓✓, RENEW✓✓ */
+  ROOT_REGISTRY_ROOT:
+    FLAGS.REGISTRY.REGISTRAR |
+    (FLAGS.REGISTRY.REGISTRAR << 128n) |
+    FLAGS.REGISTRY.REGISTER_RESERVED |
+    (FLAGS.REGISTRY.REGISTER_RESERVED << 128n) |
+    FLAGS.REGISTRY.SET_PARENT |
+    (FLAGS.REGISTRY.SET_PARENT << 128n) |
+    FLAGS.REGISTRY.RENEW |
+    (FLAGS.REGISTRY.RENEW << 128n),
+  /** .eth token: SET_SUBREGISTRY✓✓, SET_RESOLVER✓✓ */
+  ETH_TOKEN:
+    FLAGS.REGISTRY.SET_SUBREGISTRY |
+    (FLAGS.REGISTRY.SET_SUBREGISTRY << 128n) |
+    FLAGS.REGISTRY.SET_RESOLVER |
+    (FLAGS.REGISTRY.SET_RESOLVER << 128n),
+  /**
+   * Full registry role bitmap for ReverseRegistry root, .reverse token, and .addr token.
+   * Granting all roles is harmless; some (e.g. REGISTRAR) are root-only and don't apply to tokens.
+   */
+  REVERSE_AND_ADDR: FLAGS.ALL,
+  /** ETHRegistry root deployer: REGISTRAR✓, REGISTER_RESERVED✓, SET_PARENT✓✓, RENEW✓ */
+  ETH_REGISTRY_ROOT:
+    (FLAGS.REGISTRY.REGISTRAR << 128n) |
+    (FLAGS.REGISTRY.REGISTER_RESERVED << 128n) |
+    FLAGS.REGISTRY.SET_PARENT |
+    (FLAGS.REGISTRY.SET_PARENT << 128n) |
+    (FLAGS.REGISTRY.RENEW << 128n),
+} as const;
+
 // see: IPermissionedRegistry.sol
 export const STATUS = {
   AVAILABLE: 0,
