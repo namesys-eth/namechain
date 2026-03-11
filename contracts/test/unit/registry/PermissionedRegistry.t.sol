@@ -455,7 +455,7 @@ contract PermissionedRegistryTest is Test, ERC1155Holder {
 
     function test_setParent() external {
         vm.expectEmit();
-        emit IRegistry.ParentUpdated(testRegistry, testLabel, address(this));
+        emit IRegistryEvents.ParentUpdated(testRegistry, testLabel, address(this));
         registry.setParent(testRegistry, testLabel);
         (IRegistry parent, string memory label) = registry.getParent();
         assertEq(address(parent), address(testRegistry), "parent");

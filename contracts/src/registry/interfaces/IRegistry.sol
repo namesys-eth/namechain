@@ -16,7 +16,6 @@ interface IRegistry is IRegistryEvents {
     function getResolver(string calldata label) external view returns (address);
 
     /// @notice Get canonical "location" of this registry.
-    ///
     /// @return parent The canonical parent of this registry.
     /// @return label The canonical subdomain of this registry.
     function getParent() external view returns (IRegistry parent, string memory label);

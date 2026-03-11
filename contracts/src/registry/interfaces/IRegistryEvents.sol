@@ -47,4 +47,7 @@ interface IRegistryEvents {
     /// @notice Token was regenerated with a new token ID.
     ///         This occurs when roles are granted or revoked to maintain ERC1155 compliance.
     event TokenRegenerated(uint256 indexed oldTokenId, uint256 indexed newTokenId);
+
+    /// @notice Parent was changed.
+    event ParentUpdated(IRegistry indexed parent, string label, address indexed sender);
 }
