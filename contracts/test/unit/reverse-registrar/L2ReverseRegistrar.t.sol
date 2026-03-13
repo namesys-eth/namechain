@@ -119,7 +119,7 @@ contract L2ReverseRegistrarTest is Test {
         address addr,
         uint256[] memory chainIds,
         uint256 signedAt
-    ) internal view returns (bytes32) {
+    ) internal pure returns (bytes32) {
         string memory addrString = addr.toChecksumHexString();
         string memory chainIdsString = _chainIdsToString(chainIds);
         string memory signedAtString = LibISO8601.toISO8601(signedAt);
@@ -145,7 +145,7 @@ contract L2ReverseRegistrarTest is Test {
         address owner,
         uint256[] memory chainIds,
         uint256 signedAt
-    ) internal view returns (bytes32) {
+    ) internal pure returns (bytes32) {
         string memory addrString = contractAddress.toChecksumHexString();
         string memory ownerString = owner.toChecksumHexString();
         string memory chainIdsString = _chainIdsToString(chainIds);
