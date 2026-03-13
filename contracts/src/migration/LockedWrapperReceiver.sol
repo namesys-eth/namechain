@@ -109,6 +109,10 @@ abstract contract LockedWrapperReceiver is AbstractWrapperReceiver {
                 revert LibMigration.NameNotLocked(uint256(node));
             }
 
+            if (NAME_WRAPPER.getApproved(uint256(node)) != address(0)) {
+                revert LibMigration.FrozenTokenApproval(uint256(node));
+            }
+
             if ((fuses & CANNOT_SET_RESOLVER) == 0) {
                 NAME_WRAPPER.setResolver(node, address(0)); // clear ENSv1 resolver
             } else {
