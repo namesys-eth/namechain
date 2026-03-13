@@ -65,7 +65,6 @@ contract UnlockedMigrationController is AbstractWrapperReceiver, IERC721Receiver
 
     /// @dev Receives an unwrapped .eth name via ERC721 `safeTransferFrom` from the `BaseRegistrar`.
     ///      Decodes a single `LibMigration.Data` from `data` and registers the equivalent name in ENSv2.
-    ///
     /// @param tokenId The BaseRegistrar token ID (labelhash) of the name being migrated.
     /// @param data ABI-encoded `LibMigration.Data` struct containing migration parameters.
     function onERC721Received(
@@ -101,7 +100,6 @@ contract UnlockedMigrationController is AbstractWrapperReceiver, IERC721Receiver
     /// @inheritdoc AbstractWrapperReceiver
     /// @dev Reverts `NameIsLocked` if any token is locked.
     ///      Reverts `NameDataMismatch` if any token is mislabeled.
-    ///
     /// @param ids The NameWrapper token IDs (namehash) of the names to migrate.
     /// @param mds The migration parameters for each name, indexed in parallel with `ids`.
     function _migrateWrapped(

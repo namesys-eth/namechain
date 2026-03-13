@@ -37,8 +37,8 @@ import {MetadataMixin} from "./MetadataMixin.sol";
 ///
 /// State diagram:
 ///
-///                      register()
-///                   +ROLE_REGISTRAR
+///              register()
+///           +ROLE_REGISTRAR
 ///       +------------------->----------------------+
 ///       |                                          |
 ///       |                renew()                   |    renew()
@@ -52,8 +52,8 @@ import {MetadataMixin} from "./MetadataMixin.sol";
 ///       | +ROLE_REGISTRAR  |                         |
 ///       |                  |                         |
 ///       +--------<---------+------------<------------+
-///                     unregister()
-///                  +ROLE_UNREGISTER
+///             unregister()
+///          +ROLE_UNREGISTER
 ///
 contract PermissionedRegistry is
     IRegistry,

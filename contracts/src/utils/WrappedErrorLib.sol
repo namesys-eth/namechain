@@ -38,9 +38,7 @@ library WrappedErrorLib {
 
     /// @dev Unwrap a typed error from `Error(string)`.
     ///      Does nothing if detection and extracton fails.
-    ///
     /// @param err The error data to unwrap.
-    ///
     /// @return The unwrapped error data, or unmodified if not wrapped.
     function unwrap(bytes memory err) internal pure returns (bytes memory) {
         if (bytes4(err) == ERROR_STRING_SELECTOR) {

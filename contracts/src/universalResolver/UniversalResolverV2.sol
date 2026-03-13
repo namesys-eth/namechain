@@ -29,18 +29,14 @@ contract UniversalResolverV2 is AbstractUniversalResolver {
     ////////////////////////////////////////////////////////////////////////
 
     /// @notice Construct the canonical name for `registry`.
-    ///
     /// @param registry The registry to name.
-    ///
     /// @return The DNS-encoded name or empty if not canonical.
     function findCanonicalName(IRegistry registry) external view returns (bytes memory) {
         return LibRegistry.findCanonicalName(ROOT_REGISTRY, registry);
     }
 
     /// @notice Find the canonical registry for `name`.
-    ///
     /// @param name The DNS-encoded name.
-    ///
     /// @return The canonical registry or null if not canonical.
     function findCanonicalRegistry(bytes calldata name) external view returns (IRegistry) {
         return LibRegistry.findCanonicalRegistry(ROOT_REGISTRY, name);
@@ -53,7 +49,6 @@ contract UniversalResolverV2 is AbstractUniversalResolver {
     /// * `findRegistries("sub.nick.eth") = [null, <nick>, <eth>, <root>]`
     ///
     /// @param name The DNS-encoded name.
-    ///
     /// @return Array of registries in label-order.
     function findRegistries(bytes calldata name) external view returns (IRegistry[] memory) {
         return LibRegistry.findRegistries(ROOT_REGISTRY, name, 0);

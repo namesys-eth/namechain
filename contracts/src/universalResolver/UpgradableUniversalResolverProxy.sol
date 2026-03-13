@@ -7,7 +7,7 @@ import {StorageSlot} from "@openzeppelin/contracts/utils/StorageSlot.sol";
 
 /// @title UpgradableUniversalResolverProxy
 /// @dev A specialized proxy for UniversalResolver that forwards method calls
-/// and properly handles CCIP-Read reverts. Admin can upgrade the implementation.
+///      and properly handles CCIP-Read reverts. Admin can upgrade the implementation.
 contract UpgradableUniversalResolverProxy {
     ////////////////////////////////////////////////////////////////////////
     // Constants
@@ -70,7 +70,7 @@ contract UpgradableUniversalResolverProxy {
     ////////////////////////////////////////////////////////////////////////
 
     /// @dev Fallback function that handles forwarding calls to the implementation
-    /// and properly manages CCIP-Read reverts.
+    ///      and properly manages CCIP-Read reverts.
     fallback() external {
         (bool ok, bytes memory v) = _getImplementation().staticcall(msg.data);
         if (!ok && bytes4(v) == OffchainLookup.selector) {

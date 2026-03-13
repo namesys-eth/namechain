@@ -15,17 +15,18 @@ import {ResolverProfileRewriterLib} from "../resolver/libraries/ResolverProfileR
 import {LibRegistry, IRegistry} from "../universalResolver/libraries/LibRegistry.sol";
 
 /// @notice Gasless DNSSEC resolver that rewrites DNS names according to an alias rule encoded in
-///         a TXT record's context field. Supports two modes:
+/// a TXT record's context field. Supports two modes:
 ///
-///         - Rewrite: context is `<oldSuffix> <newSuffix>` — replaces the matching suffix
-///           (e.g., `*.nick.com` + context `com base.eth` → `*.nick.base.eth`).
-///         - Replace: context is `<newName>` (no space) — replaces the entire name.
+/// - Rewrite: context is `<oldSuffix> <newSuffix>` — replaces the matching suffix
+///   (e.g., `*.nick.com` + context `com base.eth` → `*.nick.base.eth`).
+/// - Replace: context is `<newName>` (no space) — replaces the entire name.
 ///
-///         After rewriting, resolves the new name through the v2 registry via
-///         `LibRegistry.findResolver()`, rewriting the node in the calldata via
-///         `ResolverProfileRewriterLib`.
+/// After rewriting, resolves the new name through the v2 registry via
+/// `LibRegistry.findResolver()`, rewriting the node in the calldata via
+/// `ResolverProfileRewriterLib`.
 ///
-///         Only invoked indirectly by `DNSTLDResolver` when processing an `ENS1` TXT record.
+/// Only invoked indirectly by `DNSTLDResolver` when processing an `ENS1` TXT record.
+///
 contract DNSAliasResolver is ERC165, ResolverCaller, IERC7996, IExtendedDNSResolver {
     ////////////////////////////////////////////////////////////////////////
     // Constants
@@ -102,13 +103,12 @@ contract DNSAliasResolver is ERC165, ResolverCaller, IERC7996, IExtendedDNSResol
     }
 
     /// @dev Applies the rewrite rule encoded in `context` to `name`. If `context` contains a
-    ///      space, it is split into an old suffix and a new suffix; the old suffix is matched
-    ///      against `name` and replaced with the new suffix. If there is no space, the entire
-    ///      `name` is replaced with the DNS-encoding of `context`.
+    /// space, it is split into an old suffix and a new suffix; the old suffix is matched
+    /// against `name` and replaced with the new suffix. If there is no space, the entire
+    /// `name` is replaced with the DNS-encoding of `context`.
     ///
     /// @param name The DNS-encoded name to rewrite.
     /// @param context The rewrite rule — either `<oldSuffix> <newSuffix>` or `<newName>`.
-    ///
     /// @return The rewritten DNS-encoded name.
     function rewriteNameWithContext(
         bytes calldata name,

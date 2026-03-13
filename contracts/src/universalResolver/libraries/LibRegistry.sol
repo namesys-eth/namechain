@@ -9,11 +9,9 @@ import {IRegistry} from "../../registry/interfaces/IRegistry.sol";
 ///      discovery, canonical name construction, and ancestry enumeration.
 library LibRegistry {
     /// @dev Find the resolver address for `name[offset:]`.
-    ///
     /// @param rootRegistry The root ENS registry.
     /// @param name The DNS-encoded name to search.
     /// @param offset The offset into `name` to begin the search.
-    ///
     /// @return exactRegistry The exact registry or null if not exact.
     /// @return resolver The resolver or null if not found.
     /// @return node The namehash of `name[offset:]`.
@@ -50,13 +48,11 @@ library LibRegistry {
 
     /// @notice Find (registry, resolver) for `name[offset:]` starting from
     ///         (parentRegistry, parentResolver) for `name[:parentOffset]`.
-    ///
     /// @param name The DNS-encoded name to search.
     /// @param offset The offset into `name` to begin the search.
     /// @param parentOffset The offset into `name` to use parent values.
     /// @param parentRegistry The registry at `name[length:]`.
     /// @param parentResolver The resolver at `name[length:]`.
-    ///
     /// @return registry The exact registry or null if not exact.
     /// @return resolver The resolver or null if not found.
     function findResolverFromParent(
@@ -91,10 +87,8 @@ library LibRegistry {
     }
 
     /// @notice Construct the canonical name for `registry`.
-    ///
     /// @param rootRegistry The root ENS registry.
     /// @param registry The registry to name.
-    ///
     /// @return name The DNS-encoded name or empty if not canonical.
     function findCanonicalName(
         IRegistry rootRegistry,
@@ -121,10 +115,8 @@ library LibRegistry {
     }
 
     /// @notice Find the registry for `name` and return it iff it is canonical for that name.
-    ///
     /// @param rootRegistry The root ENS registry.
     /// @param name The DNS-encoded name.
-    ///
     /// @return The canonical registry or null if not canonical.
     function findCanonicalRegistry(
         IRegistry rootRegistry,
@@ -140,10 +132,8 @@ library LibRegistry {
     }
 
     /// @notice Find the exact registry for `name[offset:]`.
-    ///
     /// @param rootRegistry The root ENS registry.
     /// @param name The DNS-encoded name to search.
-    ///
     /// @return exactRegistry The exact registry or null if not found.
     function findExactRegistry(
         IRegistry rootRegistry,
@@ -162,10 +152,8 @@ library LibRegistry {
     }
 
     /// @notice Find the parent registry for `name[offset:]`.
-    ///
     /// @param rootRegistry The root ENS registry.
     /// @param name The DNS-encoded name to search.
-    ///
     /// @return parentRegistry The parent registry or null if not found.
     function findParentRegistry(
         IRegistry rootRegistry,
@@ -179,11 +167,9 @@ library LibRegistry {
     }
 
     /// @notice Find all registries in the ancestry of `name`.
-    ///
     /// @param rootRegistry The root ENS registry.
     /// @param name The DNS-encoded name.
     /// @param offset The offset into `name` to begin the search.
-    ///
     /// @return registries Array of registries in label-order.
     function findRegistries(
         IRegistry rootRegistry,

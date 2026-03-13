@@ -4,16 +4,17 @@ pragma solidity ^0.8.25;
 import {IHCAFactoryBasic} from "./interfaces/IHCAFactoryBasic.sol";
 
 /// @dev Provides sender-identity resolution for Hidden Contract Accounts (HCAs). An HCA is a
-///      contract-based account whose actions should be attributed to its registered owner rather
-///      than to the contract address itself.
+/// contract-based account whose actions should be attributed to its registered owner rather
+/// than to the contract address itself.
 ///
-///      Queries the HCA factory to resolve `msg.sender` to the real owner. If the factory is not
-///      configured (address zero), or the caller is not a registered HCA (returns address zero),
-///      `msg.sender` is returned unchanged.
+/// Queries the HCA factory to resolve `msg.sender` to the real owner. If the factory is not
+/// configured (address zero), or the caller is not a registered HCA (returns address zero),
+/// `msg.sender` is returned unchanged.
 ///
-///      This enables transparent proxy wallet support: contracts using HCA-aware `_msgSender()`
-///      automatically attribute actions to the account owner regardless of whether the caller is
-///      an EOA or an HCA proxy.
+/// This enables transparent proxy wallet support: contracts using HCA-aware `_msgSender()`
+/// automatically attribute actions to the account owner regardless of whether the caller is
+/// an EOA or an HCA proxy.
+///
 abstract contract HCAEquivalence {
     /// @notice The HCA factory contract
     IHCAFactoryBasic public immutable HCA_FACTORY;

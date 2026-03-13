@@ -73,9 +73,9 @@ import {ResolverProfileRewriterLib} from "./libraries/ResolverProfileRewriterLib
 /// `setAddr(coinType)` can be restricted to a coinType using: `part = addrPart(<coinType>)`.
 ///
 /// Setters with `node` check (4) EAC resources:
-///                                                   Parts
+///                                           Parts
 ///        Resources      +-----------------------------+------------------------------+
-///                       |           Any (*)           |         Specific (1)         |
+///               |           Any (*)           |         Specific (1)         |
 ///        +--------------+-----------------------------+------------------------------+
 ///        |      Any (*) |       resource(0, 0)        |      resource(0, <part>)     |
 ///  Names |--------------+-----------------------------+------------------------------+
@@ -199,12 +199,12 @@ contract PermissionedResolver is
         __UUPSUpgradeable_init();
         _grantRoles(ROOT_RESOURCE, roleBitmap, admin, false);
     }
+
     ////////////////////////////////////////////////////////////////////////
     // Implementation
     ////////////////////////////////////////////////////////////////////////
 
     /// @notice Clear all records for `node`.
-    ///
     /// @param node The node to update.
     function clearRecords(
         bytes32 node
@@ -279,7 +279,6 @@ contract PermissionedResolver is
     }
 
     /// @notice Set ABI data of the associated ENS node.
-    ///
     /// @param node The node to update.
     /// @param contentType The content type of the ABI.
     /// @param data The ABI data.
@@ -297,7 +296,6 @@ contract PermissionedResolver is
 
     /// @notice Set Ethereum mainnet address of the associated ENS node.
     ///         `address(0)` is stored as `new bytes(20)`.
-    ///
     /// @param node The node to update.
     /// @param addr_ The mainnet address.
     function setAddr(bytes32 node, address addr_) external {
@@ -305,7 +303,6 @@ contract PermissionedResolver is
     }
 
     /// @notice Set the contenthash of the associated ENS node.
-    ///
     /// @param node The node to update.
     /// @param hash The contenthash to set.
     function setContenthash(
@@ -317,7 +314,6 @@ contract PermissionedResolver is
     }
 
     /// @notice Set an interface of the associated ENS node.
-    ///
     /// @param node The node to update.
     /// @param interfaceId The EIP-165 interface ID.
     /// @param implementer The address of the contract that implements this interface for this node.
@@ -331,7 +327,6 @@ contract PermissionedResolver is
     }
 
     /// @notice Set the SECP256k1 public key associated with an ENS node.
-    ///
     /// @param node The node to update.
     /// @param x The x coordinate of the public key.
     /// @param y The y coordinate of the public key.
@@ -345,7 +340,6 @@ contract PermissionedResolver is
     }
 
     /// @notice Set the name of the associated ENS node.
-    ///
     /// @param node The node to update.
     /// @param primary The primary name.
     function setName(
@@ -357,7 +351,6 @@ contract PermissionedResolver is
     }
 
     /// @notice Set the text for `key` of the associated ENS node.
-    ///
     /// @param node The node to update.
     /// @param key The text key.
     /// @param value The text value.
@@ -427,7 +420,6 @@ contract PermissionedResolver is
     }
 
     /// @notice Get the current version.
-    ///
     /// @param node The node to check.
     function recordVersions(bytes32 node) external view returns (uint64) {
         return _versions[node];
@@ -507,7 +499,6 @@ contract PermissionedResolver is
 
     /// @notice Set the address for `coinType` of the associated ENS node.
     ///         Reverts `InvalidEVMAddress` if coin type is EVM and not 0 or 20 bytes.
-    ///
     /// @param node The node to update.
     /// @param coinType The coin type.
     /// @param addressBytes The encoded address.
@@ -614,9 +605,7 @@ contract PermissionedResolver is
     }
 
     /// @dev Apply one round of aliasing.
-    ///
     /// @param fromName The source DNS-encoded name.
-    ///
     /// @return matchName The alias that matched.
     /// @return toName The destination DNS-encoded name or empty if no match.
     function _resolveAlias(

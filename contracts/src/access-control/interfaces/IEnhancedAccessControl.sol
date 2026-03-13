@@ -9,6 +9,7 @@ import {IERC165} from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 /// * Root resource override
 /// * Up to 32 roles and 32 corresponding admin roles
 /// * Up to 15 assignees per role
+///
 /// @dev Interface selector: `0x8f452d62`
 interface IEnhancedAccessControl is IERC165 {
     ////////////////////////////////////////////////////////////////////////

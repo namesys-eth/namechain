@@ -28,18 +28,19 @@ uint256 constant REGISTRATION_ROLE_BITMAP = 0 |
 uint256 constant ROLE_SET_ORACLE = 1 << 0;
 
 /// @notice Commit-reveal registrar for .eth names. Registration requires two transactions: first
-///         `commit(hash)` to record a commitment, then `register(...)` after the minimum commitment
-///         age but before the maximum commitment age has elapsed. The commitment hash binds all
-///         registration parameters (label, owner, secret, subregistry, resolver, duration, referrer)
-///         to prevent front-running.
+/// `commit(hash)` to record a commitment, then `register(...)` after the minimum commitment
+/// age but before the maximum commitment age has elapsed. The commitment hash binds all
+/// registration parameters (label, owner, secret, subregistry, resolver, duration, referrer)
+/// to prevent front-running.
 ///
-///         Delegates actual name storage to an `IPermissionedRegistry`, granting the owner a fixed
-///         set of roles (set subregistry, set resolver, and transfer — each with their admin
-///         counterpart).
+/// Delegates actual name storage to an `IPermissionedRegistry`, granting the owner a fixed
+/// set of roles (set subregistry, set resolver, and transfer — each with their admin
+/// counterpart).
 ///
-///         Payment is collected via ERC20 `safeTransferFrom` to an immutable beneficiary address.
-///         Pricing is delegated to a swappable `IRentPriceOracle`. Renewals pay only the base rate;
-///         registrations pay base + premium (for recently expired names).
+/// Payment is collected via ERC20 `safeTransferFrom` to an immutable beneficiary address.
+/// Pricing is delegated to a swappable `IRentPriceOracle`. Renewals pay only the base rate;
+/// registrations pay base + premium (for recently expired names).
+///
 contract ETHRegistrar is IETHRegistrar, EnhancedAccessControl {
     ////////////////////////////////////////////////////////////////////////
     // Constants

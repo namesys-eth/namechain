@@ -49,10 +49,8 @@ library DNSTXTParserLib {
     ////////////////////////////////////////////////////////////////////////
 
     /// @dev Implements a DFA to parse the text record, looking for an entry matching `key`.
-    ///
     /// @param data The text record to parse.
     /// @param key The exact key to search for with trailing equals, eg. "key=".
-    ///
     /// @return value The value if found, or an empty string if `key` does not exist.
     function find(bytes memory data, bytes memory key) internal pure returns (bytes memory value) {
         // Here we use a simple state machine to parse the text record. We

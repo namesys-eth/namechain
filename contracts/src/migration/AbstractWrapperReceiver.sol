@@ -88,7 +88,6 @@ abstract contract AbstractWrapperReceiver is ERC165, IERC1155Receiver {
     /// @notice Migrate one NameWrapper token via `safeTransferFrom()`.
     /// @dev Only callable by NameWrapper.
     ///      Reverts require `WrappedErrorLib.unwrap()` before processing.
-    ///
     /// @param id The NameWrapper token ID (namehash) of the name being migrated.
     /// @param data ABI-encoded `LibMigration.Data` struct containing migration parameters.
     function onERC1155Received(
@@ -115,7 +114,6 @@ abstract contract AbstractWrapperReceiver is ERC165, IERC1155Receiver {
     /// @notice Migrate multiple NameWrapper tokens via `safeBatchTransferFrom()`.
     /// @dev Only callable by NameWrapper.
     ///      Reverts require `WrappedErrorLib.unwrap()` before processing.
-    ///
     /// @param ids The NameWrapper token IDs (namehashes) of the names being migrated.
     /// @param data ABI-encoded `LibMigration.Data[]` array containing migration parameters for each name.
     function onERC1155BatchReceived(
@@ -143,10 +141,11 @@ abstract contract AbstractWrapperReceiver is ERC165, IERC1155Receiver {
     }
 
     /// @dev Convert NameWrapper tokens to their equivalent ENSv2 form.
-    ///      Only callable by ourself and invoked by our `IERC1155Receiver` handlers.
+    /// Only callable by ourself and invoked by our `IERC1155Receiver` handlers.
     ///
     /// TODO: gas analysis and optimization
     /// NOTE: converting this to an internal call requires catching many reverts
+    ///
     function finishERC1155Migration(
         uint256[] calldata ids,
         LibMigration.Data[] calldata mds

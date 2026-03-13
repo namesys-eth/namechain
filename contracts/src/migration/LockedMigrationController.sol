@@ -44,6 +44,7 @@ contract LockedMigrationController is LockedWrapperReceiver {
     function getWrappedNode() public pure override returns (bytes32) {
         return NameCoder.ETH_NODE;
     }
+
     ////////////////////////////////////////////////////////////////////////
     // Internal Functions
     ////////////////////////////////////////////////////////////////////////

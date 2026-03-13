@@ -17,15 +17,16 @@ import {IERC1155Singleton} from "./interfaces/IERC1155Singleton.sol";
 
 /// @notice ERC1155 variant enforcing exactly one owner per token ID.
 ///
-///         Instead of the standard nested balance mapping (`id → address → balance`), uses a flat
-///         `id → address` ownership mapping. `balanceOf` returns 1 if the account is the owner,
-///         0 otherwise. Transferring value > 1 reverts.
+/// Instead of the standard nested balance mapping (`id → address → balance`), uses a flat
+/// `id → address` ownership mapping. `balanceOf` returns 1 if the account is the owner,
+/// 0 otherwise. Transferring value > 1 reverts.
 ///
-///         Used by `PermissionedRegistry` to represent domain name ownership as non-divisible tokens.
-///         The registry overrides `ownerOf` to add expiry and version validation on top of raw ownership.
+/// Used by `PermissionedRegistry` to represent domain name ownership as non-divisible tokens.
+/// The registry overrides `ownerOf` to add expiry and version validation on top of raw ownership.
 ///
-///         Inherits `HCAContext` so that `_msgSender()` resolves HCA proxy accounts to their real
-///         owners for approval checks and operator tracking.
+/// Inherits `HCAContext` so that `_msgSender()` resolves HCA proxy accounts to their real
+/// owners for approval checks and operator tracking.
+///
 /// @author OpenZeppelin (https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.0.0/contracts/token/ERC1155/ERC1155.sol)
 /// @dev This contract has been modified from the implementation at the above link.
 abstract contract ERC1155Singleton is
