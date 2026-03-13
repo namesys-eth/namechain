@@ -1,8 +1,5 @@
 import { artifacts, execute } from "@rocketh";
-import {
-  MAX_EXPIRY,
-  DEPLOYMENT_ROLES,
-} from "../script/deploy-constants.js";
+import { DEPLOYMENT_ROLES, MAX_EXPIRY } from "../script/deploy-constants.js";
 
 // TODO: ownership
 export default execute(
@@ -55,7 +52,7 @@ export default execute(
     });
   },
   {
-    tags: ["ReverseRegistry", "l1"],
+    tags: ["ReverseRegistry", "v2"],
     dependencies: [
       "DefaultReverseResolver",
       "RootRegistry",

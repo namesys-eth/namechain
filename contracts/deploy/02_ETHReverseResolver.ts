@@ -1,9 +1,6 @@
 import { artifacts, execute } from "@rocketh";
-import {
-  MAX_EXPIRY,
-  DEPLOYMENT_ROLES,
-} from "../script/deploy-constants.js";
 import { zeroAddress } from "viem";
+import { DEPLOYMENT_ROLES, MAX_EXPIRY } from "../script/deploy-constants.js";
 
 // TODO: ownership
 export default execute(
@@ -19,7 +16,7 @@ export default execute(
       get<(typeof artifacts.PermissionedRegistry)["abi"]>("ReverseRegistry");
 
     const ethReverseRegistrar = get<
-      (typeof artifacts.StandaloneReverseRegistrar)["abi"]
+      (typeof artifacts)["lib/ens-contracts/contracts/reverseRegistrar/L2ReverseRegistrar.sol/L2ReverseRegistrar"]["abi"]
     >("ETHReverseRegistrar");
 
     // create resolver for "addr.reverse"
@@ -48,7 +45,7 @@ export default execute(
     });
   },
   {
-    tags: ["ETHReverseResolver", "l1"],
+    tags: ["ETHReverseResolver", "v2"],
     dependencies: [
       "ENSRegistry",
       "ReverseRegistry", // "RootRegistry"

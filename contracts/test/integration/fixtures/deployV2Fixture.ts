@@ -1,14 +1,13 @@
 import type { NetworkConnection } from "hardhat/types/network";
 import { type Address, zeroAddress } from "viem";
 import {
-  LOCAL_BATCH_GATEWAY_URL,
-  ROLES,
   DEPLOYMENT_ROLES,
+  LOCAL_BATCH_GATEWAY_URL,
+  MAX_EXPIRY,
+  ROLES,
 } from "../../../script/deploy-constants.js";
 import { splitName, idFromLabel } from "../../utils/utils.js";
 import { deployVerifiableProxy } from "./deployVerifiableProxy.js";
-
-export const MAX_EXPIRY = (1n << 64n) - 1n;
 
 export async function deployV2Fixture(
   network: NetworkConnection,
@@ -100,7 +99,6 @@ export async function deployV2Fixture(
   }
   // creates registries up to the parent name
   // if exact, exactRegistry is setup
-  // if no resolverAddress, dedicatedResolver is deployed
   async function setupName<exact_ extends boolean = false>({
     name,
     owner = walletClient.account.address,

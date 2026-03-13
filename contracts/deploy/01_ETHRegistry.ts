@@ -18,6 +18,7 @@ export default execute(
       (typeof artifacts.SimpleRegistryMetadata)["abi"]
     >("SimpleRegistryMetadata");
 
+    console.log("Deploying ETHRegistry");
     const ethRegistry = await deploy("ETHRegistry", {
       account: deployer,
       artifact: artifacts.PermissionedRegistry,
@@ -29,6 +30,7 @@ export default execute(
       ],
     });
 
+    console.log("  - Registering in parent");
     await write(rootRegistry, {
       account: deployer,
       functionName: "register",
@@ -47,9 +49,16 @@ export default execute(
       functionName: "setParent",
       args: [rootRegistry.address, "eth"],
     });
+
+    console.log("  - Setting canonical parent");
+    await write(ethRegistry, {
+      account: deployer,
+      functionName: "setParent",
+      args: [rootRegistry.address, "eth"],
+    });
   },
   {
-    tags: ["ETHRegistry", "l1"],
+    tags: ["ETHRegistry", "v2"],
     dependencies: ["RootRegistry", "HCAFactory", "RegistryMetadata"],
   },
 );
