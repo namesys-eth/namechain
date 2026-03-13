@@ -187,13 +187,14 @@ contract StandardRentPriceOracle is ERC165, Ownable, IRentPriceOracle {
     }
 
     /// @notice Update the discount function.
-    /// @dev - Each point is (∆t, intervalDiscount).
+    /// @dev Notes:
+    /// - Each point is (∆t, intervalDiscount).
     /// - Discounts are relative to `type(uint128).max`.
     /// - Given an average discount, solve for the corresponding interval:
     ///   * Assume: 1yr at 0% discount
     ///   * Solve: 2yr * 5% == 1yr * 0% + 1yr * x => x = 10.00%
     ///   * Point: (1yr, 10%) == (1 years, type(uint128).max / 10)
-    /// - Final discount is the derived from the weighted average over the intervals.
+    /// - Final discount is derived from the weighted average over the intervals.
     /// - Use empty array to disable.
     /// - Emits `DiscountPointsChanged`.
     ///
@@ -203,7 +204,8 @@ contract StandardRentPriceOracle is ERC165, Ownable, IRentPriceOracle {
     }
 
     /// @notice Update premium pricing function.
-    /// @dev - Use `initialPrice = 0` to disable.
+    /// @dev Notes:
+    /// - Use `initialPrice = 0` to disable.
     /// - Use `premiumPriceAfter(0)` to get exact starting price.
     /// - `premiumPriceAfter(halvingPeriod) ~= premiumPriceAfter(0) / 2`.
     /// - `premiumPriceAfter(halvingPeriod * x) ~= premiumPriceAfter(0) / 2^x`.
@@ -225,7 +227,8 @@ contract StandardRentPriceOracle is ERC165, Ownable, IRentPriceOracle {
     }
 
     /// @notice Update `paymentToken` support and/or exchange rate.
-    /// @dev - Use `denom = 0` to remove.
+    /// @dev Notes:
+    /// - Use `denom = 0` to remove.
     /// - Emits `PaymentTokenAdded` if now supported.
     /// - Emits `PaymentTokenRemoved` if no longer supported.
     /// - Reverts if invalid exchange rate.
