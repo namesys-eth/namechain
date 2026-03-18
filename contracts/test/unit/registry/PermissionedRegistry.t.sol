@@ -598,6 +598,32 @@ contract PermissionedRegistryTest is Test, ERC1155Holder {
         registry.safeTransferFrom(user1, user2, tokenId, 1, "");
     }
 
+    function test_safeTransferFrom_noop() external {
+        testRoles = RegistryRolesLib.ROLE_CAN_TRANSFER_ADMIN;
+        uint256 tokenId = this._register();
+        vm.recordLogs();
+        vm.prank(user1);
+        registry.safeTransferFrom(user1, user2, tokenId, 0, "");
+        _expectNoEmit(vm.getRecordedLogs(), IEnhancedAccessControl.EACRolesChanged.selector);
+    }
+
+    function test_safeTransferFrom_multiple(uint256 amount) external {
+        vm.assume(amount >= 2);
+        testRoles = RegistryRolesLib.ROLE_CAN_TRANSFER_ADMIN;
+        uint256 tokenId = this._register();
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IERC1155Errors.ERC1155InsufficientBalance.selector,
+                user1,
+                1,
+                amount,
+                tokenId
+            )
+        );
+        vm.prank(user1);
+        registry.safeTransferFrom(user1, user2, tokenId, amount, "");
+    }
+
     function test_safeTransferFrom_notAuthorized() external {
         uint256 tokenId = this._register();
         vm.expectRevert(
