@@ -255,11 +255,11 @@ abstract contract ERC1155Singleton is
         if (to != address(0)) {
             address operator = _msgSender();
             if (batch) {
+                ERC1155Utils.checkOnERC1155BatchReceived(operator, from, to, ids, values, data);
+            } else {
                 uint256 id = ids.unsafeMemoryAccess(0);
                 uint256 value = values.unsafeMemoryAccess(0);
                 ERC1155Utils.checkOnERC1155Received(operator, from, to, id, value, data);
-            } else {
-                ERC1155Utils.checkOnERC1155BatchReceived(operator, from, to, ids, values, data);
             }
         }
     }
